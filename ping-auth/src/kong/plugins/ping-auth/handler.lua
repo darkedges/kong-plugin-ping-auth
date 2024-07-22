@@ -10,8 +10,8 @@ local kong_response = kong.response
 local NAME = "[ping-auth] "
 
 local PingHandler = {
-  VERSION = "1.0.8",
-  PRIORITY = 999
+    VERSION = "1.0.8",
+    PRIORITY = 999
 }
 
 -- These objects are used to pass request information between the "access" and "response" phases
@@ -27,6 +27,7 @@ PingHandler.state = {}
 function PingHandler:access(config)
     local ok
     ok, PingHandler.request, PingHandler.state = pcall(access.execute, config)
+    ngx.log(ngx.DEBUG, string.format("access"))
 
     if not ok then
         ngx.log(ngx.ERR, string.format("%sEncountered unexpected error: %s", NAME, PingHandler.request))
@@ -42,7 +43,7 @@ end
 ]]
 function PingHandler:response(config)
     local ok, err = pcall(response.execute, config, PingHandler.request, PingHandler.state)
-    ngx.log(ngx.DEBUG, string.format("Reponse received"))
+    ngx.log(ngx.DEBUG, string.format("response"))
     if not ok then
         ngx.log(ngx.ERR, string.format("%sEncountered unexpected error: %s", NAME, err))
         return kong_response.exit(500)
