@@ -40,7 +40,7 @@ function _M.execute(config, original_request, state)
     ngx.log(ngx.DEBUG, string.format("response: 5"))
     local status_code, _, body = _G.network_handler.execute(config, parsed_url, request)
     ngx.log(ngx.DEBUG, string.format("response: 6"))
-    ngx.log(ngx.DEBUG, string.format("response: 6%s %s", status_code, body))
+    ngx.log(ngx.DEBUG, string.format("response: %s %s", status_code, body))
     return _M.handle_response(status_code, body)
 end
 
@@ -134,18 +134,20 @@ end
 ]]
 function _M.handle_response(status_code, body)
     local err
+    ngx.log(ngx.DEBUG, string.format("handle_response: 1"))
     body, err = _G.cjson.decode(body)
+    ngx.log(ngx.DEBUG, string.format("handle_response: 2"))
     if not body then
         ngx.log(ngx.ERR, string.format("%sUnable to parse JSON body returned from policy provider. Error: %s",
             NAME, err))
         return kong_response.exit(502)
     end
-
+    ngx.log(ngx.DEBUG, string.format("handle_response: 3"))
     -- handle failed requests
     if _G.network_handler.is_failed_request(status_code, body) then
         return kong_response.exit(502)
     end
-
+    ngx.log(ngx.DEBUG, string.format("handle_response: 4"))
     -- remove response headers not included in the response from the policy provider
     local flattened_headers = _G.network_handler.flatten_headers(body.headers)
     for k, _ in pairs(kong_response.get_headers()) do
@@ -157,6 +159,7 @@ function _M.handle_response(status_code, body)
             kong_response.clear_header(k)
         end
     end
+    ngx.log(ngx.DEBUG, string.format("handle_response: 5"))
 
     return kong_response.exit(tonumber(body.response_code), body.body, flattened_headers)
 end
