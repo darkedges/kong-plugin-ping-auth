@@ -27,7 +27,6 @@ PingHandler.state = {}
 function PingHandler:access(config)
     local ok
     ok, PingHandler.request, PingHandler.state = pcall(access.execute, config)
-    ngx.log(ngx.DEBUG, string.format("access"))
 
     if not ok then
         ngx.log(ngx.ERR, string.format("%sEncountered unexpected error: %s", NAME, PingHandler.request))
@@ -43,7 +42,6 @@ end
 ]]
 function PingHandler:response(config)
     local ok, err = pcall(response.execute, config, PingHandler.request, PingHandler.state)
-    ngx.log(ngx.DEBUG, string.format("response"))
     if not ok then
         ngx.log(ngx.ERR, string.format("%sEncountered unexpected error: %s", NAME, err))
         return kong_response.exit(500)
