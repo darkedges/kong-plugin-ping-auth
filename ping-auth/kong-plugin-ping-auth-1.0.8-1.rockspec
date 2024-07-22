@@ -1,9 +1,9 @@
 rockspec_format = "3.0"
 package = "kong-plugin-ping-auth"
-version = "0.0.1-0"
+version = "1.0.8-1"
 source = {
    url = "git+https://github.com/pingidentity/kong-plugin-ping-auth.git",
-   tag = "v0.0.1",
+   tag = "1.0.8-1",
 }
 description = {
    summary = "Integrate the Open Policy Agent (OPA) with Kong API Gateway for API access management",
@@ -16,7 +16,7 @@ description = {
 dependencies = {
    "lua-cjson",
    "lua-resty-http",
-   "lua-resty-jwt",
+   "lua-resty-jwt"
 }
 test_dependencies = {
    "luacov",
