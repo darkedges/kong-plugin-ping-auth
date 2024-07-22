@@ -1,6 +1,6 @@
 rockspec_format = "3.0"
-package = "kong-plugin-opa"
-version = "0.1.1-2"
+package = "kong-plugin-ping-auth"
+version = "0.0.1-0"
 source = {
    url = "git+https://github.com/pingidentity/kong-plugin-ping-auth.git",
    tag = "v0.0.1",
