@@ -26,16 +26,20 @@ local _M = {}
         return: nil
 ]]
 function _M.execute(config, original_request, state)
+    ngx.log(ngx.DEBUG, string.format("response: 1"))
     local parsed_url = _G.network_handler.parse_url(config.service_url)
+    ngx.log(ngx.DEBUG, string.format("response: 2"))
     local request = _M.compose_payload(config, original_request, state, parsed_url)
-
+    ngx.log(ngx.DEBUG, string.format("response: 3"))
     enable_debug_logging = config.enable_debug_logging
+    ngx.log(ngx.DEBUG, string.format("response: 4"))
     if enable_debug_logging then
         ngx.log(ngx.DEBUG, string.format("%sSending sideband response request to policy provider: \n%s",
-                NAME, _G.network_handler.request_tostring(request)))
+            NAME, _G.network_handler.request_tostring(request)))
     end
-
+    ngx.log(ngx.DEBUG, string.format("response: 5"))
     local status_code, _, body = _G.network_handler.execute(config, parsed_url, request)
+    ngx.log(ngx.DEBUG, string.format("response: 6"))
     return _M.handle_response(status_code, body)
 end
 
@@ -52,7 +56,7 @@ function _M.compose_payload(config, original_request, state, parsed_url)
     local payload_body = {}
     payload_body.method = ngx_req.get_method()
     payload_body.url = kong_request.get_forwarded_scheme() .. "://" .. kong_request.get_forwarded_host() .. ":" ..
-            kong_request.get_forwarded_port() .. kong_request.get_forwarded_path()
+        kong_request.get_forwarded_port() .. kong_request.get_forwarded_path()
     payload_body.body = kong_service_response.get_raw_body()
 
     local response_code = kong_response.get_status()
@@ -70,7 +74,8 @@ function _M.compose_payload(config, original_request, state, parsed_url)
 
     local http_version = tostring(ngx_req.http_version())
     if http_version:find("^2") then
-        ngx.log(ngx.ERR, string.format("%sHTTP/2 not supported by ping-auth (attempted to use version \"%s\")", NAME, http_version))
+        ngx.log(ngx.ERR,
+            string.format("%sHTTP/2 not supported by ping-auth (attempted to use version \"%s\")", NAME, http_version))
         return kong_response.exit(500)
     end
     payload_body.http_version = http_version
@@ -131,7 +136,7 @@ function _M.handle_response(status_code, body)
     body, err = _G.cjson.decode(body)
     if not body then
         ngx.log(ngx.ERR, string.format("%sUnable to parse JSON body returned from policy provider. Error: %s",
-                NAME, err))
+            NAME, err))
         return kong_response.exit(502)
     end
 
