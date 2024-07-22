@@ -160,7 +160,7 @@ function _M.handle_response(status_code, body)
         end
     end
     ngx.log(ngx.DEBUG, string.format("handle_response: 5"))
-    ngx.log(ngx.DEBUG, string.format("handle_response: %s:%s", body.response_code, body.body))
+    -- ngx.log(ngx.DEBUG, string.format("handle_response: %s:%s", body.response_code, body.body))
 
     return kong_response.exit(tonumber(body.response_code), body.body)
 end
