@@ -40,6 +40,7 @@ function _M.execute(config, original_request, state)
     ngx.log(ngx.DEBUG, string.format("response: 5"))
     local status_code, _, body = _G.network_handler.execute(config, parsed_url, request)
     ngx.log(ngx.DEBUG, string.format("response: 6"))
+    ngx.log(ngx.DEBUG, string.format("response: 6%s %s", status_code, body))
     return _M.handle_response(status_code, body)
 end
 
